@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,9 @@ builder.Services.AddSwaggerGen();
 //Configure InMemory Database
 builder.Services.AddDbContext<OrderManagementDbContext>(options =>
     options.UseInMemoryDatabase("OrderManagementDb"));
+// Configure Identity
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<OrderManagementDbContext>();
 
 var app = builder.Build();
 
@@ -25,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
