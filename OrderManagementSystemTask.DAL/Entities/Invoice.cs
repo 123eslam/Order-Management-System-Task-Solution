@@ -1,8 +1,7 @@
 ﻿namespace OrderManagementSystemTask.DAL.Entities
 {
-    public class Invoice
+    public class Invoice : ModelBase<int>
     {
-        public int Id { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
         public decimal TotalAmount { get; set; }
