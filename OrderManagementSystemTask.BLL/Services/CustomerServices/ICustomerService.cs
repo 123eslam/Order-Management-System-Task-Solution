@@ -5,7 +5,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
 {
     public interface ICustomerService
     {
-        Task<CustomerResultDto> CreateCustomerAsync(CustomerResultDto customerDto);
+        Task<CustomerResultDto> CreateCustomerAsync(CreateOrUpdateCustomerDto customerDto);
         Task<IEnumerable<OrderResultDto>> GetAllCustomerOrders(int customerId);
     }
 }

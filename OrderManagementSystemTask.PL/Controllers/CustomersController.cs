@@ -12,7 +12,7 @@ namespace OrderManagementSystemTask.PL.Controllers
     {
         [HttpPost]
         [ProducesResponseType(typeof(CustomerResultDto), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<CustomerResultDto>> CreateCustomer(CustomerResultDto customerDto)
+        public async Task<ActionResult<CustomerResultDto>> CreateCustomer(CreateOrUpdateCustomerDto customerDto)
         {
             var createdCustomer = await customerService.CreateCustomerAsync(customerDto);
             return Ok(createdCustomer);

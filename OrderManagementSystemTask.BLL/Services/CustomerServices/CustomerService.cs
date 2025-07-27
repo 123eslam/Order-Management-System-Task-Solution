@@ -7,7 +7,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
 {
     public class CustomerService(IUnitOfWork unitOfWork) : ICustomerService
     {
-        public async Task<CustomerResultDto> CreateCustomerAsync(CustomerResultDto customerDto)
+        public async Task<CustomerResultDto> CreateCustomerAsync(CreateOrUpdateCustomerDto customerDto)
         {
             var customere = new Customer
             {
@@ -20,7 +20,12 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
             {
                 throw new Exception("Failed to create customer.");
             }
-            return customerDto;
+            return new CustomerResultDto
+            {
+                Id = customere.Id,
+                Name = customere.Name,
+                Email = customere.Email
+            };
         }
 
         public async Task<IEnumerable<OrderResultDto>> GetAllCustomerOrders(int customerId)

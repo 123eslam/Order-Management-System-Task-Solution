@@ -5,5 +5,7 @@ namespace OrderManagementSystemTask.DAL.Presistance.Repostories.InvoiceRepositoi
 {
     public interface IInvoiceRepository : IGenericRepository<Invoice, int>
     {
+        Task<IEnumerable<Invoice>> GetAllInvoicesWithDetailsAsync();
+        Task<Invoice?> GetInvoiceWithDetailsByIdAsync(int id);
     }
 }

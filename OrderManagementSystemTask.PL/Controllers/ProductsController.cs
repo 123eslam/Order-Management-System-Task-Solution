@@ -28,7 +28,7 @@ namespace OrderManagementSystemTask.PL.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(ProductResultDto), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ProductResultDto>> CreateProduct(ProductResultDto productDto)
+        public async Task<ActionResult<ProductResultDto>> CreateProduct(CreateOrUpdateProductDto productDto)
         {
             var createdProduct = await productService.CreateProductAsync(productDto);
             return Ok(createdProduct);
@@ -37,7 +37,7 @@ namespace OrderManagementSystemTask.PL.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ProductResultDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ProductResultDto>> UpdateProduct(int id, ProductResultDto productDto)
+        public async Task<ActionResult<ProductResultDto>> UpdateProduct(int id, CreateOrUpdateProductDto productDto)
         {
             var updatedProduct = await productService.UpdateProductAsync(id, productDto);
             return Ok(updatedProduct);

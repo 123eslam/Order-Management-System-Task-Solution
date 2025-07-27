@@ -32,7 +32,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
                 Stock = product.Stock
             };
         }
-        public async Task<ProductResultDto> CreateProductAsync(ProductResultDto productDto)
+        public async Task<ProductResultDto> CreateProductAsync(CreateOrUpdateProductDto productDto)
         {
             var product = new Product
             {
@@ -50,7 +50,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
                 Stock = product.Stock
             };
         }
-        public async Task<ProductResultDto> UpdateProductAsync(int id, ProductResultDto productDto)
+        public async Task<ProductResultDto> UpdateProductAsync(int id, CreateOrUpdateProductDto productDto)
         {
             var product = await _unitOfWork.ProductRepostory.GetByIdAsync(id);
             if (product == null)

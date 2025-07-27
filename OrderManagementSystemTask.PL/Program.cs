@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OrderManagementSystemTask.BLL.Dtos.AuthenticationDto;
 using OrderManagementSystemTask.BLL.Services.AuthenticationServies;
 using OrderManagementSystemTask.BLL.Services.CustomerServices;
 using OrderManagementSystemTask.BLL.Services.EmailServices;
+using OrderManagementSystemTask.BLL.Services.InvoiceServices;
 using OrderManagementSystemTask.BLL.Services.OrderServices;
 using OrderManagementSystemTask.BLL.Services.ProductServices;
 using OrderManagementSystemTask.DAL.Entities;
@@ -37,6 +39,28 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+
+//Swagger Configuration
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme()
+        {
+            Type = SecuritySchemeType.ApiKey,
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Description = "Enter the token with the `Bearer: ` prefix, e.g. \"Bearer abcde12345\". without the double quotes"
+        });
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement { {
+                            new OpenApiSecurityScheme {
+                                Reference = new OpenApiReference {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer" } },
+                            new string[] { } } });
+});
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 // Configure JWT Authentication
