@@ -22,15 +22,8 @@ namespace OrderManagementSystemTask.PL.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<OrderResultDto>>> GetAllCustomerOrders(int customerId)
         {
-            try
-            {
-                var orders = await customerService.GetAllCustomerOrders(customerId);
-                return Ok(orders);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var orders = await customerService.GetAllCustomerOrders(customerId);
+            return Ok(orders);
         }
     }
 }

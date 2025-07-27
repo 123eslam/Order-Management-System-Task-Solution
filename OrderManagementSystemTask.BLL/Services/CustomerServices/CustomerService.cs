@@ -7,7 +7,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
 {
     public class CustomerService(IUnitOfWork unitOfWork) : ICustomerService
     {
-        public Task<CustomerResultDto> CreateCustomerAsync(CustomerResultDto customerDto)
+        public async Task<CustomerResultDto> CreateCustomerAsync(CustomerResultDto customerDto)
         {
             var customere = new Customer
             {
@@ -15,17 +15,12 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
                 Name = customerDto.Name
             };
             unitOfWork.CustomerRepostory.Add(customere);
-            return unitOfWork.CompleteAsync().ContinueWith(c =>
+            var result = await unitOfWork.CompleteAsync();
+            if (result <= 0)
             {
-                if (c.IsCompletedSuccessfully)
-                {
-                    return customerDto;
-                }
-                else
-                {
-                    throw new Exception("Failed to create customer.");
-                }
-            });
+                throw new Exception("Failed to create customer.");
+            }
+            return customerDto;
         }
 
         public async Task<IEnumerable<OrderResultDto>> GetAllCustomerOrders(int customerId)

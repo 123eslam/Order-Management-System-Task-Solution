@@ -42,7 +42,13 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             };
             _unitOfWork.ProductRepostory.Add(product);
             await _unitOfWork.CompleteAsync();
-            return productDto;
+            return new ProductResultDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock
+            };
         }
         public async Task<ProductResultDto> UpdateProductAsync(int id, ProductResultDto productDto)
         {
@@ -56,7 +62,13 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             product.Stock = productDto.Stock;
             _unitOfWork.ProductRepostory.Update(product);
             await _unitOfWork.CompleteAsync();
-            return productDto;
+            return new ProductResultDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock
+            };
         }
     }
 }

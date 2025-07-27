@@ -5,5 +5,6 @@ namespace OrderManagementSystemTask.DAL.Presistance.Repostories.CustomerRepostor
     public interface ICustomerRepostory 
     {
         void Add(Customer entity);
+        Task<Customer?> GetByIdAsync(int id);
     }
 }

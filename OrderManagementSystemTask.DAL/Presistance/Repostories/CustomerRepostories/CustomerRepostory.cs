@@ -16,5 +16,9 @@ namespace OrderManagementSystemTask.DAL.Presistance.Repostories.CustomerRepostor
         {
             _dbContext.Customers.Add(entity);
         }
+        public async Task<Customer?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Customers.FindAsync(id);
+        }
     }
 }

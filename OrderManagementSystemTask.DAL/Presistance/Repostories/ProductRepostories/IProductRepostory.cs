@@ -5,5 +5,6 @@ namespace OrderManagementSystemTask.DAL.Presistance.Repostories.ProductRepostori
 {
     public interface IProductRepostory : IGenericRepository<Product ,int>
     {
+        Task<IEnumerable<Product>> GetByIdsAsync(List<int> ids);
     }
 }
