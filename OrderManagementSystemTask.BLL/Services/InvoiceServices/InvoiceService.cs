@@ -1,4 +1,5 @@
-﻿using OrderManagementSystemTask.BLL.Dtos.InvoiceDtos;
+﻿using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
+using OrderManagementSystemTask.BLL.Dtos.InvoiceDtos;
 using OrderManagementSystemTask.BLL.Dtos.OrderDto;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
 
@@ -38,7 +39,7 @@ namespace OrderManagementSystemTask.BLL.Services.InvoiceServices
             var invoice = await unitOfWork.InvoiceRepository.GetInvoiceWithDetailsByIdAsync(id);
             if (invoice == null)
             {
-                throw new Exception($"Invoice with ID {id} not found.");
+                new NotFoundException($"Invoice with ID {id} not found.");
             }
             return new InvoiceResultDto
             {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,6 +16,8 @@ using OrderManagementSystemTask.DAL.Presistance.Data;
 using OrderManagementSystemTask.DAL.Presistance.Data.DataSeeding;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
 using OrderManagementSystemTask.PL.Extensions;
+using OrderManagementSystemTask.PL.Factories;
+using OrderManagementSystemTask.PL.Middlewares;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,6 +64,10 @@ builder.Services.AddSwaggerGen(c =>
                                     Id = "Bearer" } },
                             new string[] { } } });
 });
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationErrorResponse;
+});
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 // Configure JWT Authentication
@@ -85,7 +92,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 await app.SeedDbAsync();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

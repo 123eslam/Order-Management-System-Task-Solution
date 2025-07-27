@@ -1,4 +1,5 @@
 ﻿using OrderManagementSystemTask.BLL.Dtos.EmailDto;
+using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
 using OrderManagementSystemTask.BLL.Dtos.OrderDto;
 using OrderManagementSystemTask.BLL.Services.EmailServices;
 using OrderManagementSystemTask.DAL.Entities;
@@ -35,7 +36,7 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
             var order = await unitOfWork.OrderRepository.GetOrderWithDetailsByIdAsync(orderId);
             if (order == null)
             {
-                throw new KeyNotFoundException($"Order with ID {orderId} not found.");
+                new NotFoundException($"Order with ID {orderId} not found.");
             }
             return new OrderResultDto
             {
@@ -61,7 +62,7 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
             var customer = await unitOfWork.CustomerRepostory.GetByIdAsync(orderRequest.CustomerId);
             if (customer == null)
             {
-                throw new KeyNotFoundException($"Customer with ID {orderRequest.CustomerId} not found.");
+                new NotFoundException($"Customer with ID {orderRequest.CustomerId} not found.");
             }
             var productIds = orderRequest.OrderItems.Select(item => item.ProductId).ToList();
             var products = await unitOfWork.ProductRepostory.GetByIdsAsync(productIds); 
@@ -70,7 +71,7 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
             {
                 if (!productsDict.TryGetValue(item.ProductId, out var product) || product.Stock < item.Quantity)
                 {
-                    throw new InvalidOperationException($"Product with ID {item.ProductId} is either not available or has insufficient stock.");
+                    new NotFoundException($"Product with ID {item.ProductId} is either not available or has insufficient stock.");
                 }
             }
             var orderItems = orderRequest.OrderItems.Select(item =>
@@ -119,7 +120,7 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
             var result = await unitOfWork.CompleteAsync();
             if (result <= 0)
             {
-                throw new Exception("Failed to create the order.");
+                new Exception("Failed to create the order.");
             }
             return await GetOrderByIdAsync(newOrder.Id);
         }
@@ -129,18 +130,18 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
             var order = await unitOfWork.OrderRepository.GetOrderWithDetailsByIdAsync(orderId);
             if (order == null)
             {
-                throw new KeyNotFoundException($"Order with ID {orderId} not found.");
+                new NotFoundException($"Order with ID {orderId} not found.");
             }
             var validStatuses = new[] { "Pending", "PaymentReceived", "Shipped", "Delivered", "Cancelled" };
             if (!validStatuses.Contains(newStatus))
             {
-                throw new ArgumentException($"'{newStatus}' is not a valid order status.");
+                new NotFoundException($"'{newStatus}' is not a valid order status.");
             }
             order.Status = newStatus;
             var result = await unitOfWork.CompleteAsync();
             if (result <= 0)
             {
-                throw new Exception("Failed to update the order status.");
+                new Exception("Failed to update the order status.");
             }
             var emailSend = new Email
             {

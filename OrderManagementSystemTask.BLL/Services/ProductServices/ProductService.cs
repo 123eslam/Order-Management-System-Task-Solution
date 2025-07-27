@@ -1,4 +1,5 @@
-﻿using OrderManagementSystemTask.BLL.Dtos.ProductDto;
+﻿using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
+using OrderManagementSystemTask.BLL.Dtos.ProductDto;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
 
@@ -22,7 +23,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             var product = await _unitOfWork.ProductRepostory.GetByIdAsync(id);
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {id} not found.");
+                new NotFoundException($"Product with ID {id} not found.");
             }
             return new ProductResultDto
             {
@@ -55,7 +56,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             var product = await _unitOfWork.ProductRepostory.GetByIdAsync(id);
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {id} not found.");
+                new NotFoundException($"Product with ID {id} not found.");
             }
             product.Name = productDto.Name;
             product.Price = productDto.Price;

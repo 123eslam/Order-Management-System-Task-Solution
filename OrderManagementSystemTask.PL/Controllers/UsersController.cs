@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderManagementSystemTask.BLL.Dtos.AuthenticationDto;
+using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
 using OrderManagementSystemTask.BLL.Services.AuthenticationServies;
 using System.Net;
 
@@ -7,6 +8,9 @@ namespace OrderManagementSystemTask.PL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ProducesResponseType(typeof(ErrorDetails), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorDetails), (int)HttpStatusCode.InternalServerError)]
+    [ProducesResponseType(typeof(ValidationErrorResponse), (int)HttpStatusCode.BadRequest)]
     public class UsersController(IAuthenticationService authenticationService) : ControllerBase
     {
         [HttpPost("Register")]

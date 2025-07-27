@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OrderManagementSystemTask.BLL.Dtos.AuthenticationDto;
+using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,10 +17,10 @@ namespace OrderManagementSystemTask.BLL.Services.AuthenticationServies
         {
             //Check email exists
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user is null) throw new Exception("No user found");
+            if (user is null) new UnAuthorizedException();
             //Check password
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            if (!result) throw new Exception("No user found");
+            if (!result) new UnAuthorizedException();
             return new UserResultDto(userName: user.UserName,token: await CreateTokenAsync(user),email: user.Email!);
         }
 
@@ -35,7 +35,8 @@ namespace OrderManagementSystemTask.BLL.Services.AuthenticationServies
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded)
             {
-                throw new Exception("Registration failed!");
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                throw new ValidationException(errors);
             }
             await _userManager.AddToRoleAsync(user, "Customer");
             var customer = new Customer

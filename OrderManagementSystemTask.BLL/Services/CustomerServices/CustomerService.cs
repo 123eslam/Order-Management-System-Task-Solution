@@ -1,4 +1,5 @@
 ﻿using OrderManagementSystemTask.BLL.Dtos.CustomerDto;
+using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
 using OrderManagementSystemTask.BLL.Dtos.OrderDto;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
@@ -18,7 +19,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
             var result = await unitOfWork.CompleteAsync();
             if (result <= 0)
             {
-                throw new Exception("Failed to create customer.");
+                new Exception("Failed to create customer.");
             }
             return new CustomerResultDto
             {
@@ -33,7 +34,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
             var orders = await unitOfWork.OrderRepository.GetAllCustomerOrderAsync(customerId);
             if (orders == null || !orders.Any())
             {
-                throw new KeyNotFoundException($"No orders found for customer with ID {customerId}.");
+                new NotFoundException($"No orders found for customer with ID {customerId}.");
             }
             return orders.Select(o => new OrderResultDto
             {
