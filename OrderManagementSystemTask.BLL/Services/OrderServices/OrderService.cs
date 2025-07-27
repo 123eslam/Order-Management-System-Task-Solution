@@ -2,12 +2,13 @@
 using OrderManagementSystemTask.BLL.Dtos.ErrorDtos;
 using OrderManagementSystemTask.BLL.Dtos.OrderDto;
 using OrderManagementSystemTask.BLL.Services.EmailServices;
+using OrderManagementSystemTask.BLL.Services.PaymentServices;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
 
 namespace OrderManagementSystemTask.BLL.Services.OrderServices
 {
-    public class OrderService(IUnitOfWork unitOfWork, IEmailService emailService) : IOrderService
+    public class OrderService(IUnitOfWork unitOfWork, IEmailService emailService, IEnumerable<IPaymentService> paymentServices) : IOrderService
     {
         public async Task<IEnumerable<OrderResultDto>> GetAllOrdersAsync()
         {
@@ -96,6 +97,18 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
                 discountPercentage = 0.05m; 
             }
             decimal totalAmount = subTotal * (1 - discountPercentage);
+            var paymentService = paymentServices.FirstOrDefault(p => p.PaymentMethodName.Equals(orderRequest.PaymentMethod, StringComparison.OrdinalIgnoreCase));
+
+            if (paymentService == null)
+            {
+                throw new NotFoundException($"Payment method '{orderRequest.PaymentMethod}' is not supported.");
+            }
+            var paymentSuccessful = await paymentService.ProcessPayment(totalAmount);
+
+            if (!paymentSuccessful)
+            {
+                throw new Exception("Payment failed. Order cannot be created.");
+            }
             var newOrder = new Order
             {
                 CustomerId = orderRequest.CustomerId,
@@ -103,7 +116,7 @@ namespace OrderManagementSystemTask.BLL.Services.OrderServices
                 TotalAmount = totalAmount,
                 PaymentMethod = orderRequest.PaymentMethod,
                 OrderItems = orderItems,
-                PaymentIntentId = 0//for now, this will be replaced with actual payment intent ID
+                Status = "Pending"
             };
             unitOfWork.OrderRepository.Add(newOrder);
             foreach (var item in orderItems)

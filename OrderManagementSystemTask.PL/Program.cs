@@ -10,6 +10,7 @@ using OrderManagementSystemTask.BLL.Services.CustomerServices;
 using OrderManagementSystemTask.BLL.Services.EmailServices;
 using OrderManagementSystemTask.BLL.Services.InvoiceServices;
 using OrderManagementSystemTask.BLL.Services.OrderServices;
+using OrderManagementSystemTask.BLL.Services.PaymentServices;
 using OrderManagementSystemTask.BLL.Services.ProductServices;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.Data;
@@ -43,6 +44,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IPaymentService, CreditCardPaymentService>();
+builder.Services.AddScoped<IPaymentService, PayPalPaymentService>();
 
 //Swagger Configuration
 builder.Services.AddEndpointsApiExplorer();

@@ -52,7 +52,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
                     Discount = oi.Discount
                 }).ToList(),
                 PaymentMethod = o.PaymentMethod,
-                Status = o.PaymentIntentId.ToString() //Will Change later
+                Status = o.Status
             });
         }
     }

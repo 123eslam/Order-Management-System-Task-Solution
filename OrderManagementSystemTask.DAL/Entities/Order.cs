@@ -8,7 +8,6 @@
         public Customer Customer { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public string PaymentMethod { get; set; }
-        public int PaymentIntentId { get; set; }
         public string Status { get; set; } = "Pending";
     }
 }
