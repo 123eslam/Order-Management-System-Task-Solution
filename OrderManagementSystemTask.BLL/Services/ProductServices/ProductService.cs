@@ -23,7 +23,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             var product = await _unitOfWork.ProductRepostory.GetByIdAsync(id);
             if (product == null)
             {
-                new NotFoundException($"Product with ID {id} not found.");
+                throw new NotFoundException($"Product with ID {id} not found.");
             }
             return new ProductResultDto
             {
@@ -56,7 +56,7 @@ namespace OrderManagementSystemTask.BLL.Services.ProductServices
             var product = await _unitOfWork.ProductRepostory.GetByIdAsync(id);
             if (product == null)
             {
-                new NotFoundException($"Product with ID {id} not found.");
+                throw new NotFoundException($"Product with ID {id} not found.");
             }
             product.Name = productDto.Name;
             product.Price = productDto.Price;

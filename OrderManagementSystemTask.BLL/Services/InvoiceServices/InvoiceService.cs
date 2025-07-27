@@ -39,7 +39,7 @@ namespace OrderManagementSystemTask.BLL.Services.InvoiceServices
             var invoice = await unitOfWork.InvoiceRepository.GetInvoiceWithDetailsByIdAsync(id);
             if (invoice == null)
             {
-                new NotFoundException($"Invoice with ID {id} not found.");
+                throw new NotFoundException($"Invoice with ID {id} not found.");
             }
             return new InvoiceResultDto
             {

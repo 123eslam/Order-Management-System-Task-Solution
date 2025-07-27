@@ -17,10 +17,10 @@ namespace OrderManagementSystemTask.BLL.Services.AuthenticationServies
         {
             //Check email exists
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user is null) new UnAuthorizedException();
+            if (user is null) throw new UnAuthorizedException();
             //Check password
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            if (!result) new UnAuthorizedException();
+            if (!result) throw new UnAuthorizedException();
             return new UserResultDto(userName: user.UserName,token: await CreateTokenAsync(user),email: user.Email!);
         }
 

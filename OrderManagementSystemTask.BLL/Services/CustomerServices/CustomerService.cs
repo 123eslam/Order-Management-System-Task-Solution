@@ -19,7 +19,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
             var result = await unitOfWork.CompleteAsync();
             if (result <= 0)
             {
-                new Exception("Failed to create customer.");
+                throw new Exception("Failed to create customer.");
             }
             return new CustomerResultDto
             {
@@ -34,7 +34,7 @@ namespace OrderManagementSystemTask.BLL.Services.CustomerServices
             var orders = await unitOfWork.OrderRepository.GetAllCustomerOrderAsync(customerId);
             if (orders == null || !orders.Any())
             {
-                new NotFoundException($"No orders found for customer with ID {customerId}.");
+                throw new NotFoundException($"No orders found for customer with ID {customerId}.");
             }
             return orders.Select(o => new OrderResultDto
             {
