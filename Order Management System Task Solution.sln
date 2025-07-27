@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagementSystemTask.PL", "OrderManagementSystemTask.PL\OrderManagementSystemTask.PL.csproj", "{569DE56C-81C1-4A99-BFA9-5F86082421A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagementSystemTask.DAL", "OrderManagementSystemTask.DAL\OrderManagementSystemTask.DAL.csproj", "{07C2A90A-EEC9-4E8A-BA14-A985E118E949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagementSystemTask.BLL", "OrderManagementSystemTask.BLL\OrderManagementSystemTask.BLL.csproj", "{92AC3F13-87D3-405D-A257-2979476C49B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagementSystemTask.Tests", "OrderManagementSystemTask.Tests\OrderManagementSystemTask.Tests.csproj", "{A8DD28EB-F39F-4772-9C55-1D76AA77FCC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{92AC3F13-87D3-405D-A257-2979476C49B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92AC3F13-87D3-405D-A257-2979476C49B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92AC3F13-87D3-405D-A257-2979476C49B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8DD28EB-F39F-4772-9C55-1D76AA77FCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8DD28EB-F39F-4772-9C55-1D76AA77FCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8DD28EB-F39F-4772-9C55-1D76AA77FCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8DD28EB-F39F-4772-9C55-1D76AA77FCC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

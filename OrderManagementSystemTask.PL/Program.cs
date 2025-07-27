@@ -1,3 +1,26 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using OrderManagementSystemTask.BLL.Dtos.AuthenticationDto;
+using OrderManagementSystemTask.BLL.Services.AuthenticationServies;
+using OrderManagementSystemTask.BLL.Services.CustomerServices;
+using OrderManagementSystemTask.BLL.Services.EmailServices;
+using OrderManagementSystemTask.BLL.Services.InvoiceServices;
+using OrderManagementSystemTask.BLL.Services.OrderServices;
+using OrderManagementSystemTask.BLL.Services.PaymentServices;
+using OrderManagementSystemTask.BLL.Services.ProductServices;
+using OrderManagementSystemTask.DAL.Entities;
+using OrderManagementSystemTask.DAL.Presistance.Data;
+using OrderManagementSystemTask.DAL.Presistance.Data.DataSeeding;
+using OrderManagementSystemTask.DAL.Presistance.UnitOfWork;
+using OrderManagementSystemTask.PL.Extensions;
+using OrderManagementSystemTask.PL.Factories;
+using OrderManagementSystemTask.PL.Middlewares;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,8 +30,73 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+//Configure InMemory Database
+builder.Services.AddDbContext<OrderManagementDbContext>(options =>
+    options.UseInMemoryDatabase("OrderManagementDb"));
+// Configure Identity
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<OrderManagementDbContext>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDbIntializer, DbIntializer>();
+builder.Services.AddScoped<IAuthenticationService , AuthenticationService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IPaymentService, CreditCardPaymentService>();
+builder.Services.AddScoped<IPaymentService, PayPalPaymentService>();
 
+//Swagger Configuration
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme()
+        {
+            Type = SecuritySchemeType.ApiKey,
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Description = "Enter the token with the `Bearer: ` prefix, e.g. \"Bearer abcde12345\". without the double quotes"
+        });
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement { {
+                            new OpenApiSecurityScheme {
+                                Reference = new OpenApiReference {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer" } },
+                            new string[] { } } });
+});
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationErrorResponse;
+});
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
+// Configure JWT Authentication
+var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidAudience = jwtOptions.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
+    };
+});
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
+await app.SeedDbAsync();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -18,6 +106,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
