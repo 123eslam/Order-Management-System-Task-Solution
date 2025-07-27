@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrderManagementSystemTask.BLL.Dtos.AuthenticationDto;
 using OrderManagementSystemTask.BLL.Services.AuthenticationServies;
+using OrderManagementSystemTask.BLL.Services.CustomerServices;
 using OrderManagementSystemTask.BLL.Services.ProductServices;
 using OrderManagementSystemTask.DAL.Entities;
 using OrderManagementSystemTask.DAL.Presistance.Data;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbIntializer, DbIntializer>();
 builder.Services.AddScoped<IAuthenticationService , AuthenticationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 // Configure JWT Authentication

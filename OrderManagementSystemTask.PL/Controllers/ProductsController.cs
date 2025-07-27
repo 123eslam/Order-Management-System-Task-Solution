@@ -8,7 +8,6 @@ namespace OrderManagementSystemTask.PL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ProductsController(IProductService productService) : ControllerBase
     {
         [HttpGet]
@@ -28,7 +27,7 @@ namespace OrderManagementSystemTask.PL.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [ProducesResponseType(typeof(ProductResultDto), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ProductResultDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ProductResultDto>> CreateProduct(ProductResultDto productDto)
         {
             var createdProduct = await productService.CreateProductAsync(productDto);
